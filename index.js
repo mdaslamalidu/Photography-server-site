@@ -40,14 +40,18 @@ async function run() {
 
   app.get("/serviceDetails/:id", async (req, res) => {
     const id = req.params;
-    console.log(id);
     const query = { _id: ObjectId(id) };
     const result = await serviceCollection.findOne(query);
     res.send(result);
   });
 
   app.get("/review", async (req, res) => {
-    const query = {};
+    let query = {};
+    if (req.query.id) {
+      query = {
+        id: req.query.id,
+      };
+    }
     const cursor = userReview.find(query);
     const result = await cursor.toArray();
     res.send(result);
@@ -55,7 +59,6 @@ async function run() {
 
   app.post("/review", async (req, res) => {
     const query = req.body;
-    console.log(query);
     const result = await userReview.insertOne(query);
     res.send(result);
   });
