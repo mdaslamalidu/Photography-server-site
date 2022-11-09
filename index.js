@@ -96,6 +96,33 @@ async function run() {
       }
     });
 
+    app.get("/update/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const result = await userReview.findOne(query);
+      res.send(result);
+    });
+
+    app.put("/update/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const user = req.body;
+      console.log(user);
+      const updated = { upsert: true };
+      const updateUser = {
+        $set: { user },
+      };
+      const result = await userReview.updateOne(query, updateUser, updated);
+      res.send(result);
+    });
+
+    app.delete("/myReview/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const result = await userReview.deleteOne(query);
+      res.send(result);
+    });
+
     app.post("/review", async (req, res) => {
       const query = req.body;
       const result = await userReview.insertOne(query);
