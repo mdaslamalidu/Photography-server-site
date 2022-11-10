@@ -32,7 +32,7 @@ function varifyToken(req, res, next) {
     if (err) {
       return res.status(403).send({ message: "forbidden access" });
     }
-    req.decoded;
+    req.decoded = decoded;
     next();
   });
 }
@@ -78,12 +78,17 @@ async function run() {
           id: req.query.id,
         };
       }
-      const cursor = userReview.find(query);
+
+      const cursor = userReview.find(query).sort({ _id: -1 });
       const result = await cursor.toArray();
       res.send(result);
     });
 
     app.get("/myReview", varifyToken, async (req, res) => {
+      const decoded = req.decoded;
+      if (req.query.email !== decoded.email) {
+        res.status(403).send({ message: "unauthorized access" });
+      }
       let query = {};
       if (req.query.email) {
         query = {
