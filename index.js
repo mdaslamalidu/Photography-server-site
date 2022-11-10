@@ -107,6 +107,7 @@ async function run() {
       const query = { _id: ObjectId(id) };
       const result = await userReview.updateOne(query, { $set: req.body });
       console.log(result);
+      console.log(id, result, req.body);
       res.send(result);
     });
 
