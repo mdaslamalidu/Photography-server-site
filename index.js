@@ -23,7 +23,6 @@ const client = new MongoClient(uri, {
 
 function varifyToken(req, res, next) {
   const authHeader = req.headers.authorization;
-  console.log(authHeader);
   if (!authHeader) {
     return res.status(401).send({ message: "unauthorized access" });
   }
@@ -103,16 +102,11 @@ async function run() {
       res.send(result);
     });
 
-    app.put("/update/:id", async (req, res) => {
+    app.patch("/update/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: ObjectId(id) };
-      const user = req.body;
-      console.log(user);
-      const updated = { upsert: true };
-      const updateUser = {
-        $set: { user },
-      };
-      const result = await userReview.updateOne(query, updateUser, updated);
+      const result = await userReview.updateOne(query, { $set: req.body });
+      console.log(result);
       res.send(result);
     });
 
